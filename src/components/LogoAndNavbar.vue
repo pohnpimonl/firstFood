@@ -7,6 +7,7 @@
           <router-link to="/"><button>อาหาร</button></router-link>
           <router-link to="/login"><button>สมาชิก</button></router-link>
           <router-link to="/cart"><button>รายการสั่งซื้อ</button></router-link>
+          <span v-show="$root.state.cart.length">{{ $root.state.cart.length }}</span>
       </div>
   </div>
 </template>
@@ -23,8 +24,8 @@ export default {
 
 <style>
 .logo {
-  height: 290px;
-  padding: 90px 0 10px;
+  height: 240px;
+  padding: 40px 0 16px;
   text-align: center;
 }
 .logo img {
@@ -41,7 +42,7 @@ export default {
   border-radius: 20px;
 }
 .navmenu button:hover{
-  background-color: crimson;
+  background-color: #9a0606;
 }
 .activeMenu {
   background-color: #9a0606;

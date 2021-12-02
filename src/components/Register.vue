@@ -5,7 +5,7 @@
         <div class="container">
           <div>
             <label for="avatar"> Avatar :</label>
-            <input type="file" name="avatar" />
+            <input type="file" name="avatar" @change="addAvatar"/>
           </div>
 
           <label for="firstname"><b>ชื่อ</b></label>
@@ -44,16 +44,27 @@ export default {
         phoneNumber:'',
         email:'',
         password:'',
-        avatar:'',
+        avatar:null,
       }
     }
   },
   methods:{
-    register(){
+    register() {
+      const formData = new FormData()
+      formData.append('firstname', this.form.firstname)
+      formData.append('lastname', this.form.lastname)
+      formData.append('phoneNumber', this.form.phoneNumber)
+      formData.append('email', this.form.email)
+      formData.append('password', this.form.password)
+      formData.append('avatar', this.form.avatar)
       const registerURL = `${host}/register`
-      fetch(registerURL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.form)})
-      .then(response=>{if(response.status>=200 && response.status<300){alert('OK')}else{alert('Fail')}})
-      .catch(err=>{alert(err)})
+      fetch(registerURL, {method: 'POST',body: formData})
+      .then(response => {if (response.status >= 200 && response.status < 300) {alert('สมัครสมาชิกเรียบร้อยแล้ว กรุณาเข้าสู่ระบบ')} else {alert('fail')}
+      this.$router.push('/login')})
+      .catch(err => {alert(err)})
+    },
+    addAvatar(event) {
+      this.form.avatar = event.target.files[0]
     },
   }
 }

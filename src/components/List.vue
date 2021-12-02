@@ -3,7 +3,7 @@
     <div class="foodListrecommends">
       <div v-for="food in foodList.recommends" :key="food.id">
         <div class="imgrecom">
-          <img :src="picfoods+food.photo" alt="" class="menuimg" />
+          <img :src="$root.state.urlpic+food.photo" alt="" class="menuimg" />
         </div>
         <div class="titlerecom">
           <p>{{ food.name }}</p>
@@ -16,42 +16,45 @@
     <div class="foodListrest">
       <div v-for="food in foodList.rest" :key="food.id">
         <div class="imgrest">
-          <img :src="picfoods+food.photo" alt="" class="menuimg" />
+          <img :src="$root.state.urlpic+food.photo" alt="" class="menuimg" />
         </div>
         <div class="titlerest">
           <p>{{ food.name }}</p>
           <p>{{ food.shopname }}</p>
           <p>{{ food.price }} Baht</p>
-          <button @click="addToCart(food)">+ เพิ่ม</button>
+          <button class="registerbtn" @click="addToCart(food)">+ เพิ่ม</button>
        </div>
       </div>
+    </div>
+    <div class="buttonpage">
+      <button v-for="index in (total / limit)" :key="index" @click="onChangePage(index)" class="butpage">
+        {{index}}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import store from '../store'
 export default {
   data() {
     return {
       foods: [],
+      pageNumber:1,
+      limit:10,
+      total:0,
       plusimg: require("../assets/plus.png"),
-      picfoods: "https://camt-foodapi.pair-co.com",
     };
   },
   mounted() {
-    const listURL = `${host}`;
-    fetch(listURL, { method: "GET" })
-      .then((response) => response.json())
-      .then((foodsData) => {
-        this.foods = foodsData;
-      });
+    this.getFood()
   },
   computed: {
     foodList() {
       const recommends = [];
       const rest = [];
       for (let i = 0; i < this.foods.length; i++) {
-        if (i <= 3) {
+        if (i <= 1) {
           recommends.push(this.foods[i]);
         } else {
           rest.push(this.foods[i]);
@@ -64,9 +67,22 @@ export default {
     },
   },
   methods: {
-    addToCart(food) {
-      this.$emit("add:tocart", food);
+    getFood(){
+    const listURL = `${host}?limit=${this.limit}&offset=${this.pageNumber-1}`;
+    fetch(listURL, { method: "GET" })
+      .then((response) => response.json())
+      .then((data) => {
+        this.foods = data.data
+        this.total = data.total
+      })
     },
+    addToCart(food) {
+      store.addToCart(food)
+    },
+    onChangePage(pageNumber){
+      this.pageNumber=pageNumber
+      this.getFood()
+    }
   },
 };
 const host = "https://camt-foodapi.pair-co.com/foods/";
@@ -104,6 +120,7 @@ const host = "https://camt-foodapi.pair-co.com/foods/";
 .titlerecom button{
   background-color: #fff;
   border: none;
+  cursor: pointer;
 }
 .foodListrest {
   display: grid;
@@ -118,9 +135,24 @@ const host = "https://camt-foodapi.pair-co.com/foods/";
   border-bottom-right-radius: 20px;
 }
 .titlerest button{
-  background-color: #fff;
-  border-color: red;
-  color: red;
+  background-color: #9a0606;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 0;
+  color: #fff;
   width: 100%;
+  cursor: pointer;
+}
+.buttonpage{
+  text-align: center;
+}
+.butpage{
+  background-color: #9a0606;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin: 16px;
+  color: #fff;
+  cursor: pointer;
 }
 </style>

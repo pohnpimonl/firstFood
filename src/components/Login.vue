@@ -21,8 +21,8 @@ const host = 'https://camt-foodapi.pair-co.com'
 export default {
   data(){
     return{
-      username:'poxng2@test.com',
-      password:'secret',
+      username:'aweqaweq@hotmail.com',
+      password:'123456',
     }
   },
   methods:{
